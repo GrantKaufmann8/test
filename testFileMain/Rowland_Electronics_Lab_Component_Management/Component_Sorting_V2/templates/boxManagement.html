@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>boxManagement</title>
+        <form action="/" method="post">
+            <button type="submit">Home</button>
+        </form>
+    </head>
+    <body>
+        <h1>Box {{ lastBox }} Management</h1>
+        <!-- <h1>Name: {{ tempNameVar }}</h1>
+        <p>Name: {{ tempDescVar }}</p> -->
+        <form action="/boxManagement" method="post">
+            <input autocomplete="off" autofocus="on" name="boxID" placeholder="Box ID" type="number" value="{{ lastBox }}" required>
+        </form>
+        <form action="/addBin" method="post">
+            <input type="hidden" name="boxID" value="{{ lastBox }}">
+            <input autocomplete="off" name="binID" placeholder="Bin ID" type="number" required>
+            <button type="submit">Add Bin</button>
+        </form>
+        <h1>Box {{lastBox}} Contents</h1>
+        <ol>
+            {% for bin in bins %}
+                <li>Bin {{ bin.binID }}c</li>
+            {% endfor %}
+        </ol>
+        <html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>Description</title>
+    </table>
+    </head>
+    <body>
+
+        <h1>Item Description</h1>
+
+        <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+            <tr>
+                <form action="/updateBoxDesc" method="post">
+                    <input type="hidden" name="boxID" value="{{ lastBox }}">
+                    <td><input type="text" name="name" value="{{ boxName }}"></td>
+                    <td><input type="text" name="desc" value="{{ boxDesc }}"></td>
+                </form>
+            </tr>
+    </body>
+    </table>
+        <h1>Individual Box Contents</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component ID</th>
+                    <th>Name</th>
+                    <th>Bin ID</th>
+                    <th>Type</th>
+                    <th>Functional?</th>
+                    <th>QTY</th>
+                    <th>Datasheet</th>
+                    <th></th>
+                </tr>
+                <tbody>
+                    {% for component in boxContents %}
+                        <tr>
+                            <td>{{ component.ID }}</td>
+                            <td>{{ component.name }}</td>
+                            <td>{{ component.binID }}c</td>
+                            <td>{{ component.type }}</td>
+                            <td>{{ component.functionality }}</td>
+                            <td>{{ component.qty }}</td>
+                            <td><button onclick="searchDatasheet('{{ component.name }}')">Datasheet</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </thead>
+        </table>
+    <script>
+        document.querySelectorAll('input[name="name"], input[name="desc"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                setTimeout(() => {
+                    this.form.submit();
+                }, 2000); // 1000ms delay
+            });
+        });
+
+        document.querySelector('input[name="boxID"]').addEventListener('change', function() {
+            this.form.submit();
+        });
+
+        window.onload = function() {
+            var input = document.querySelector('input[name="boxID"]');
+            input.focus();
+            input.setSelectionRange(input.value.length, input.value.length);
+        };
+
+        function searchDatasheet(partName) {
+            const query = partName + " datasheet";
+            const url = "https://www.google.com/search?q=" + encodeURIComponent(query);
+            window.open(url, '_blank');
+        }
+    </script>
+</html>

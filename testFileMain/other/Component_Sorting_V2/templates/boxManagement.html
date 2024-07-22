@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>boxManagement</title>
+        <form action="/" method="post">
+            <button type="submit">Home</button>
+        </form>
+    </head>
+    <body>
+        <h1>Box {{ lastBox }} Management</h1>
+        <form action="/boxManagement" method="post">
+            <input autocomplete="off" autofocus="on" name="boxID" placeholder="Box ID" type="number" value="{{ lastBox }}" required>
+        </form>
+        <form action="/addBin" method="post">
+            <input type="hidden" name="boxID" value="{{ lastBox }}">
+            <input autocomplete="off" name="binID" placeholder="Bin ID" type="number" required>
+            <button type="submit">Add Bin</button>
+        </form>
+        <h1>Box {{lastBox}} Contents</h1>
+        <ol>
+            {% for bin in bins %}
+                <li>Bin {{ bin.binID }}c</li>
+            {% endfor %}
+        </ol>
+    </body>
+    <script>
+        document.querySelector('input[name="boxID"]').addEventListener('change', function() {
+            this.form.submit();
+        });
+
+        window.onload = function() {
+            var input = document.querySelector('input[name="boxID"]');
+            input.focus();
+            input.setSelectionRange(input.value.length, input.value.length);
+        };
+    </script>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>Search</title>
+        <form action="/" method="post">
+            <button type="submit">Home</button>
+        </form>
+    </head>
+    <body>
+        <form action="/searching" method="post">
+            <input autocomplete="off" autofocus="on" name="SearchBox" placeholder="Enter a Search Term" type="text" value="{{ lastSearch }}" required>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component ID</th>
+                    <th>Name</th>
+                    <th>Bin ID</th>
+                    <th>Box ID</th>
+                    <th>Type</th>
+                    <th>Functional?</th>
+                    <th>QTY</th>
+                    <th>Datasheet</th>
+                    <th></th>
+                </tr>
+                <tbody>
+                    {% for component in componentsList %}
+                        <tr>
+                            <td>{{ component.ID }}</td>
+                            <td>{{ component.name }}</td>
+                            <td>{{ component.binID }}c</td>
+                            <td>{{ component.BoxID }}</td>
+                            <td>{{ component.type }}</td>
+                            <td>{{ component.functionality }}</td>
+                            <td>{{ component.qty }}</td>
+                            <td><button onclick="searchDatasheet('{{ component.name }}')">Datasheet</button></td>
+                            <td>
+                                <button onclick="deleteComp({{ component.ID }})">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </thead>
+        </table>
+    </body>
+    <script>
+        document.querySelector('input[name="SearchBox"]').addEventListener('input', function() {
+            this.form.submit();
+        });
+
+        window.onload = function() {
+            var input = document.querySelector('input[name="SearchBox"]');
+            input.focus();
+            input.setSelectionRange(input.value.length, input.value.length);
+        };
+
+        function searchDatasheet(partName) {
+            const query = partName + " datasheet";
+            const url = "https://www.google.com/search?q=" + encodeURIComponent(query);
+            window.open(url, '_blank');
+        }
+
+        function deleteComp(componentID)
+            {
+                if (confirm(`Are you sure you want to delete component #${componentID}?`)) {
+                    fetch('/deleteFromSearch', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({id: componentID})
+                    }).then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Error deleting item');
+                        }
+                    });
+                }
+            }
+    </script>
+</html>

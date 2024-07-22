@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>Backups</title>
+    </table>
+    </head>
+    <body>
+        <form action="/" method="post">
+            <button type="submit">Home</button>
+        </form>
+
+        <h1>Backup Manager</h1>
+        <form action="/create_backup" method="post">
+            <input type="hidden" name="date" value="{{ date }}">
+            <button type="submit">Create Backup</button>
+        </form>
+        <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+        {% for date in backup_dates %}
+        <tr>
+            <td>{{ date }}</td>
+            <td>
+                <a href="/download_backup/{{ date }}">Download</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>History</title>
+        <form action="/" method="post">
+            <button type="submit">Home</button>
+        </form>
+    </head>
+    <body>
+        <table style="border: 1px solid black;">
+            <thead>
+                <tr>
+                    <th>Bin ID</th>
+                    <th>Component ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Functional?</th>
+                    <th>QTY</th>
+                    <th>Date Added</th>
+                </tr>
+                <tbody>
+                    {% for component in currentBinContents %}
+                        <tr>
+                            <td>{{ component.binID }}</td>
+                            <td>{{ component.ID }}</td>
+                            <td>{{ component.name }}</td>
+                            <td>{{ component.type }}</td>
+                            <td>{{ component.functionality }}</td>
+                            <td>{{ component.qty }}</td>
+                            <td>{{ component.dateAndTime }}</td>
+                            <td>
+                                <button onclick="deleteComp({{ component.ID }})">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </thead>
+        </table>
+        <script>
+
+            function deleteComp(componentID)
+            {
+                if (confirm(`Are you sure you want to delete component #${componentID}?`)) {
+                    fetch('/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({id: componentID})
+                    }).then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Error deleting item');
+                        }
+                    });
+                }
+            }
+
+        </script>
+    </body>
+</html>

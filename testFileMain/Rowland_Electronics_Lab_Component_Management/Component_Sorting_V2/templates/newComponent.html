@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link rel="stylesheet" type="text/css" href="../static/style.css">
+        <title>newComponent</title>
+        <form action="/" method="post">
+            <button type="submit">Home</button>
+        </form>
+    </head>
+    <body>
+        <h1>New Component:</h1>
+        <form action="/addNewComponent" method="post">
+            <table style="border: 1px solid black;">
+                <thead>
+                    <tr>
+                        <th>Bin ID</th>
+                        <th>Component ID</th>
+                        <th>Component Name</th>
+                        <th>Type</th>
+                        <th>Functional?</th>
+                        <th>QTY</th>
+                        <th>Confirm</th>
+                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <form action="/diffBin" method="post" name="diffBin">
+                                    <input autocomplete="off" name="binID" placeholder="Bin ID" type="text" value = "{{ lastBin }}" required>
+                                </form>
+                            </td>
+                            <td>
+                                <input autocomplete="off" name="compID" placeholder="Component ID" type="text" value = "{{ newComp }}" required>
+                            </td>
+                            <td>
+                                <input autocomplete="off" autofocus name="compName" placeholder="Name" type="text" required>
+                            </td>
+                            <td>
+                                <select name="type" value= '{{ type }}'>
+                                    <option>Transistor, 2N</option>
+                                    <option>Power Trans, FETS</option>
+                                    <option>Analog</option>
+                                    <option>PCB</option>
+                                    <option>Power Supply</option>
+                                    <option>Low Power Schottky</option>
+                                    <option>J-FET Amplifier</option>
+                                    <option>IC</option>
+                                    <option>IC Linear Voltage Regulator</option>
+                                    <option>IC CMOS</option>
+                                    <option>IC Gate Driver</option>
+                                    <option>IC Voltage Reference</option>
+                                    <option>IC Amplifier</option>
+                                    <option>IC Differential Amplifier</option>
+                                    <option>IC Switch</option>
+                                    <option>IC Differential Receiver</option>
+                                    <option>IC Op Amp</option>
+                                    <option>IC Preamp</option>
+                                    <option>IC Controller</option>
+                                    <option>IC Switching Controller</option>
+                                    <option>IC Audio Amplifier</option>
+                                    <option>IC Voltage to Frequency Converter</option>
+                                    <option>IC Audio Circuit</option>
+                                    <option>IC Voltage Feedback Amplifier</option>
+                                    <option>IC Comparator</option>
+                                    <option>IC Receiver</option>
+                                    <option>IC Supervisor</option>
+                                    <option>IC TVS</option>
+                                    <option>IC Digital to Analog Converter</option>
+                                    <option>IC DA/AD Converter</option>
+                                    <option>IC Analog to Digital Converter</option>
+                                    <option>IC Hall Effect Sensor</option>
+                                    <option>IC Current Mirror</option>
+                                    <option>IC Switched Integrator Amplifier</option>
+                                    <option>IC Sample Rate Converter</option>
+                                    <option>IC Down Converter</option>
+                                    <option>IC Voltage Regulator</option>
+                                    <option>IC Charge Pump Switching Regulator</option>
+                                    <option>IC Half-Bridge Gate Driver</option>
+                                    <option>IC Motor Driver</option>
+                                    <option>IC Linear</option>
+
+                                </select>
+                            </td>
+                            <td>
+                                <select name="functional">
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                    <option>Unknown</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input autocomplete="off" name="qty" placeholder="Quantity" type="number" value = "1" required>
+                            </td>
+                            <td>
+                                <button type="submit">Confirm</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </thead>
+            </table>
+        </form>
+        <form action="/newBin" method="post">
+            <button type="submit">New Box</button>
+        </form>
+        <h1>Bin {{lastBin}} Contents</h1>
+        <table style="border: 1px solid black;">
+            <thead>
+                <tr>
+                    <th>Component ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Functional?</th>
+                    <th>QTY</th>
+                </tr>
+                <tbody>
+                    {% for component in currentBinContents %}
+                        <tr>
+                            <td>{{ component.ID }}</td>
+                            <td>{{ component.name }}</td>
+                            <td>{{ component.type }}</td>
+                            <td>{{ component.functionality }}</td>
+                            <td>{{ component.qty }}</td>
+                            <td>
+                                <button onclick="deleteComp({{ component.ID }})">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </thead>
+        </table>
+        <script>
+
+        document.querySelector('input[name="binID"]').addEventListener('input', function() {
+            document.getElementById('diffBin').submit();
+        });
+
+            function deleteComp(componentID)
+            {
+                if (confirm(`Are you sure you want to delete component #${componentID}?`)) {
+                    fetch('/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({id: componentID})
+                    }).then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Error deleting item');
+                        }
+                    });
+                }
+            }
+
+            // document.getElementById('compName').addEventListener('keydown',
+            // function(event) {
+            //     event.preventDefault();
+            //     if (event.key === 'Enter') {
+            //         document.getElementById('qty').focus();
+            //     }
+            // });
+
+            // document.getElementById('qty').addEventListener('keydown',
+            // function(event) {
+            //     if (event.key === 'Enter') {
+            //         event.preventDefault();
+            //         document.getElementById('/addNewComponent').submit();
+            //         document.getElementById('compName').focus();
+            //     }
+            // });
+
+            // document.querySelector('form').addEventListener('submit', function(event) {
+            //     event.preventDefault();
+            //     // Handle form submission manually here
+            // });
+
+        </script>
+    </body>
+</html>
+
